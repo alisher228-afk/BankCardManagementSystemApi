@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-alter-pan-last4-to-varchar
+      author: akusher
+      changes:
+        - modifyDataType:
+            tableName: cards
+            columnName: pan_last4
+            newDataType: VARCHAR(4)
