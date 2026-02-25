@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/migration/002-create-cards.yaml
   - include:
       file: db/migration/003-alter-cards-pan_last4.yaml
+  - include:
+      file: db/migration/004-create-accounts.yaml

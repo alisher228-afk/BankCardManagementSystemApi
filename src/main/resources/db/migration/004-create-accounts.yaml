@@ -1,44 +1,47 @@
 databaseChangeLog:
   - changeSet:
-      id: 002-create-cards
+      id: 004-create-accounts
       author: akusher
       changes:
         - createTable:
-            tableName: cards
+            tableName: accounts
             columns:
               - column:
                   name: id
                   type: BIGSERIAL
                   constraints:
                     primaryKey: true
+                    nullable: false
 
               - column:
-                  name: encrypted_pan
-                  type: VARCHAR(512)
+                  name: iban
+                  type: VARCHAR(34)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: balance
+                  type: NUMERIC(19,2)
+                  defaultValueNumeric: 0
                   constraints:
                     nullable: false
 
               - column:
-                  name: pan_last4
-                  type: VARCHAR(4)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: account_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: expiry_date
-                  type: VARCHAR(7)
+                  name: currency
+                  type: VARCHAR(3)
                   constraints:
                     nullable: false
 
               - column:
                   name: status
                   type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
                   constraints:
                     nullable: false
 
@@ -55,8 +58,8 @@ databaseChangeLog:
                   type: TIMESTAMP
 
         - addForeignKeyConstraint:
-            baseTableName: cards
-            baseColumnNames: account_id
-            referencedTableName: accounts
+            baseTableName: accounts
+            baseColumnNames: user_id
+            constraintName: fk_accounts_user
+            referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_cards_account
