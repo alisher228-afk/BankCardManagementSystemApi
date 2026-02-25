@@ -32,8 +32,8 @@ public class Card {
     private String panLast4;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     @NotNull
     @Column(name = "expiry_date", nullable = false)
@@ -42,10 +42,6 @@ public class Card {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CardStatus status = CardStatus.ACTIVE;
-
-    @NotNull
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal balance = BigDecimal.ZERO;
 
     @Version
     private Long version;
@@ -71,10 +67,9 @@ public class Card {
     public Card() {
     }
 
-    public Card(String encryptedPan, String panLast4, User owner, YearMonth expiryDate) {
+    public Card(String encryptedPan, String panLast4, YearMonth expiryDate) {
         this.encryptedPan = encryptedPan;
         this.panLast4 = panLast4;
-        this.owner = owner;
         this.expiryDate = expiryDate;
     }
 
@@ -102,13 +97,6 @@ public class Card {
         this.panLast4 = panLast4;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 
     public YearMonth getExpiryDate() {
         return expiryDate;
@@ -126,11 +114,4 @@ public class Card {
         this.status = status;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
 }
