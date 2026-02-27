@@ -31,7 +31,7 @@ public class Account {
 
     @NotNull
     @Column(nullable = false, length = 3)
-    private String currency; // KZT, USD, EUR
+    private String currency;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
