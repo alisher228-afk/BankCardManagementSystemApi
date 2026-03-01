@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-transactions
+      author: akusher
+      changes:
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: from_account_id
+                  type: BIGINT
+
+              - column:
+                  name: to_account_id
+                  type: BIGINT
+
+              - column:
+                  name: amount
+                  type: NUMERIC(19,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: reference
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: version
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: transactions
+            baseColumnNames: from_account_id
+            referencedTableName: accounts
+            referencedColumnNames: id
+            constraintName: fk_tx_from_account
+
+        - addForeignKeyConstraint:
+            baseTableName: transactions
+            baseColumnNames: to_account_id
+            referencedTableName: accounts
+            referencedColumnNames: id
+            constraintName: fk_tx_to_account
+
+        - createIndex:
+            indexName: idx_tx_from_account
+            tableName: transactions
+            columns:
+              - column:
+                  name: from_account_id
+
+        - createIndex:
+            indexName: idx_tx_to_account
+            tableName: transactions
+            columns:
+              - column:
+                  name: to_account_id
