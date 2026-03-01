@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-create-accounts
+      id: 002-create-accounts
       author: akusher
       changes:
         - createTable:
@@ -56,6 +56,9 @@ databaseChangeLog:
               - column:
                   name: updated_at
                   type: TIMESTAMP
+
+        - sql:
+            sql: ALTER TABLE accounts ADD CONSTRAINT chk_balance_positive CHECK (balance >= 0);
 
         - addForeignKeyConstraint:
             baseTableName: accounts

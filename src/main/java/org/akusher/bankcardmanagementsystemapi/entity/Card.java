@@ -3,8 +3,6 @@ package org.akusher.bankcardmanagementsystemapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.time.LocalDateTime;
 

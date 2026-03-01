@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 006-create-transactions
+      id: 004-create-transactions
       author: akusher
       changes:
         - createTable:
@@ -15,10 +15,14 @@ databaseChangeLog:
               - column:
                   name: from_account_id
                   type: BIGINT
+                  constraints:
+                    nullable: false
 
               - column:
                   name: to_account_id
                   type: BIGINT
+                  constraints:
+                    nullable: false
 
               - column:
                   name: amount

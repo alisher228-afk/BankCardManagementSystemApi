@@ -8,7 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
-    Page<Card> findByOwner(User owner, Pageable pageable);
-    Page<Card> findByOwnerAndStatus(User owner, CardStatus status, Pageable pageable);
-    boolean existsByOwnerIdAndId(Long ownerId, Long cardId);
+
+    // Получить карты по владельцу аккаунта
+    Page<Card> findByAccountUser(User user, Pageable pageable);
+
+    // Получить карты по владельцу аккаунта и статусу карты
+    Page<Card> findByAccountUserAndStatus(User user, CardStatus status, Pageable pageable);
+
+    // Проверить, существует ли карта с указанным владельцем и id карты
+    boolean existsByAccountUserIdAndId(Long userId, Long cardId);
 }

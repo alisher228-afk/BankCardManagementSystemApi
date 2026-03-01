@@ -1,7 +1,6 @@
-package org.akusher.bankcardmanagementsystemapi.service;
+package org.akusher.bankcardmanagementsystemapi.service.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.akusher.bankcardmanagementsystemapi.service.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
