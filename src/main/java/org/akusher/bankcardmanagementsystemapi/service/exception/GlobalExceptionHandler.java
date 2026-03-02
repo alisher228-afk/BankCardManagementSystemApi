@@ -92,6 +92,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, new HttpHeaders(), status);
     }
 
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            org.springframework.security.access.AccessDeniedException ex,
+            HttpServletRequest req) {
+        return buildResponse("Access denied", HttpStatus.FORBIDDEN, req.getRequestURI());
+    }
+
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(
+            org.springframework.security.authentication.BadCredentialsException ex,
+            HttpServletRequest req) {
+        return buildResponse("Invalid username or password", HttpStatus.UNAUTHORIZED, req.getRequestURI());
+    }
+
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ErrorResponse {
         private LocalDateTime timestamp;

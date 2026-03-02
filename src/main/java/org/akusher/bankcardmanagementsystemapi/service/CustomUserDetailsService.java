@@ -2,12 +2,9 @@ package org.akusher.bankcardmanagementsystemapi.service;
 
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.repository.UserRepository;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,10 +26,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(user.getRole().name().replace("ROLE_", ""))
                 .disabled(!user.isEnabled())
                 .build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
