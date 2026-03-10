@@ -3,8 +3,10 @@ package org.akusher.bankcardmanagementsystemapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.YearMonth;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
+
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 @Entity
 @Table(

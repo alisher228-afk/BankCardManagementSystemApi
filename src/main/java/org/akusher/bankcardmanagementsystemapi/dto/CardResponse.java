@@ -1,6 +1,6 @@
 package org.akusher.bankcardmanagementsystemapi.dto;
 
-import org.akusher.bankcardmanagementsystemapi.entity.CardStatus;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
 
 import java.time.YearMonth;
 

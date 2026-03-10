@@ -1,7 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.repository;
 
 import org.akusher.bankcardmanagementsystemapi.entity.Card;
-import org.akusher.bankcardmanagementsystemapi.entity.CardStatus;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

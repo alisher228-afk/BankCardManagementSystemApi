@@ -2,10 +2,12 @@ package org.akusher.bankcardmanagementsystemapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -33,6 +35,9 @@ public class Account {
     @Column(nullable = false, length = 3)
     private String currency;
 
+    @Column(nullable = false , unique = true , length = 32)
+    private String accountNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus status = AccountStatus.ACTIVE;
@@ -59,6 +64,8 @@ public class Account {
         updatedAt = createdAt;
     }
 
+
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
@@ -73,6 +80,13 @@ public class Account {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getIban() {

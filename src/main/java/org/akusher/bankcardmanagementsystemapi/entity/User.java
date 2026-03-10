@@ -3,6 +3,7 @@ package org.akusher.bankcardmanagementsystemapi.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

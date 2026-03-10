@@ -3,6 +3,7 @@ package org.akusher.bankcardmanagementsystemapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.TransactionStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

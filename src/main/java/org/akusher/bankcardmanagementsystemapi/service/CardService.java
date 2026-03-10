@@ -3,7 +3,7 @@ package org.akusher.bankcardmanagementsystemapi.service;
 import org.akusher.bankcardmanagementsystemapi.dto.CardResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.mapping.CardResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.Card;
-import org.akusher.bankcardmanagementsystemapi.entity.CardStatus;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.CardRepository;
