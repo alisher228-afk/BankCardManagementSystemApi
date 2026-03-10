@@ -1,8 +1,8 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
-import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
 import org.akusher.bankcardmanagementsystemapi.entity.Transaction;
+import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.TransactionStatus;
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.TransactionRepository;

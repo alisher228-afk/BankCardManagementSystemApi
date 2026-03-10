@@ -7,7 +7,6 @@ import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatu
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(

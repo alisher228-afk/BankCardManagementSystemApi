@@ -2,7 +2,6 @@ package org.akusher.bankcardmanagementsystemapi.controller;
 
 import org.akusher.bankcardmanagementsystemapi.dto.AccountResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.CreateAccountRequest;
-import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.service.AccountService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
