@@ -5,10 +5,12 @@ import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.repository.RefreshTokenRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 public class RefreshTokenService {
 
     private final RefreshTokenRepository repository;
@@ -25,7 +27,7 @@ public class RefreshTokenService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow();
 
-        repository.deleteByUser(user);
+        repository.deleteByUserId(user.getId());
 
         RefreshToken token = new RefreshToken();
         token.setUser(user);
