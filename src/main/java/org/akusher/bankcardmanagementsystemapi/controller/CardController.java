@@ -1,11 +1,13 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
 import org.akusher.bankcardmanagementsystemapi.dto.CardResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.CreateCardRequest;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.service.CardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,4 +40,27 @@ public class CardController {
     ) {
         cardService.activateCard(cardId, user.getId());
     }
+
+    @PostMapping
+    public CardResponse create(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody CreateCardRequest request
+    ) {
+        return cardService.create(
+                userDetails.getUsername(),
+                request.accountId()
+        );
+    }
+
+    @DeleteMapping("/{cardId}")
+    public void deleteCard(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long cardId
+    ) {
+        cardService.delete(
+                userDetails.getUsername(),
+                cardId
+        );
+    }
+
 }
