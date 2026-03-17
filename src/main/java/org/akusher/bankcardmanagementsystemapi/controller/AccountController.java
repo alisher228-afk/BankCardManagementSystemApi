@@ -1,10 +1,16 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
+import jakarta.validation.Valid;
 import org.akusher.bankcardmanagementsystemapi.dto.AccountResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.CreateAccountRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.DepositRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
 import org.akusher.bankcardmanagementsystemapi.service.AccountService;
+import org.akusher.bankcardmanagementsystemapi.service.TransferService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
+    private final TransferService transferService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, TransferService transferService) {
         this.accountService = accountService;
+        this.transferService = transferService;
     }
 
     @PostMapping
@@ -51,5 +59,14 @@ public class AccountController {
                 id,
                 userDetails.getUsername()
         );
+    }
+
+    @PostMapping("/{accountId}/deposit")
+    public ResponseEntity<TransactionResponse> deposit(
+            @PathVariable Long accountId,
+            @Valid @RequestBody DepositRequest request) {
+
+        TransactionResponse response = transferService.deposit(accountId, request.amount());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

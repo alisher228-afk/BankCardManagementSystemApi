@@ -1,5 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
+import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.mapping.TransactionResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
 import org.akusher.bankcardmanagementsystemapi.entity.Transaction;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
@@ -17,10 +19,12 @@ public class TransferService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionResponseMapping transactionResponseMapping;
 
-    public TransferService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public TransferService(AccountRepository accountRepository, TransactionRepository transactionRepository, TransactionResponseMapping transactionResponseMapping) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.transactionResponseMapping = transactionResponseMapping;
     }
     @Transactional
     public void transfer(Long fromId, Long toId, BigDecimal amount) {
@@ -94,6 +98,40 @@ public class TransferService {
         tx.setReference(java.util.UUID.randomUUID().toString());
         tx.setDescription("Transfer");
         return tx;
+    }
+
+    @Transactional
+    public TransactionResponse deposit(Long accountId, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidTransferException("Amount must be greater than zero");
+        }
+
+        Account account = accountRepository.findByIdForUpdate(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new AccountInactiveException(accountId);
+        }
+
+        Transaction tx = new Transaction();
+        tx.setFromAccount(null);
+        tx.setToAccount(account);
+        tx.setAmount(amount);
+        tx.setCurrency(account.getCurrency());
+        tx.setStatus(TransactionStatus.PENDING);
+        tx.setReference(java.util.UUID.randomUUID().toString());
+        tx.setDescription("Deposit");
+        transactionRepository.save(tx);
+
+        try {
+            account.setBalance(account.getBalance().add(amount));
+            tx.setStatus(TransactionStatus.COMPLETED);
+        } catch (RuntimeException ex) {
+            tx.setStatus(TransactionStatus.FAILED);
+            throw ex;
+        }
+
+        return transactionResponseMapping.mapToResponse(tx);
     }
 
 }
