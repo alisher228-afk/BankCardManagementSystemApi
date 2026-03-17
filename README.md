@@ -1,8 +1,10 @@
-Bank Card Management System API
+# 🏦 Bank Card Management System API
 
 > 🚧 **В разработке** — проект активно развивается. Планируется добавление новых функций и улучшений. Следите за обновлениями!
 
 REST API для управления банковскими счетами и картами с JWT-аутентификацией и разграничением ролей.
+
+---
 
 ## Технологический стек
 
@@ -26,20 +28,18 @@ REST API для управления банковскими счетами и к
 
 ### Настройка базы данных
 
-Создай БД в PostgreSQL:
-
 ```sql
 CREATE DATABASE postgres;
 ```
 
 По умолчанию приложение ожидает:
 
-| Параметр | Значение              |
-|----------|-----------------------|
-| URL      | `localhost:5438`      |
-| БД       | `postgres`            |
-| Username | `postgres`            |
-| Password | `54321`               |
+| Параметр | Значение         |
+|----------|------------------|
+| URL      | `localhost:5438` |
+| БД       | `postgres`       |
+| Username | `postgres`       |
+| Password | `54321`          |
 
 Все параметры можно изменить в `src/main/resources/application.properties`.
 
@@ -49,8 +49,7 @@ CREATE DATABASE postgres;
 mvn spring-boot:run
 ```
 
-Приложение запустится на порту **8087**.  
-Liquibase автоматически применит миграции при старте.
+Приложение запустится на порту **8087**. Liquibase автоматически применит миграции при старте.
 
 ---
 
@@ -58,12 +57,13 @@ Liquibase автоматически применит миграции при с
 
 Используется схема **Access Token + Refresh Token**.
 
-| Параметр          | Значение     |
-|-------------------|--------------|
-| Access TTL        | 15 минут     |
-| Refresh TTL       | 7 дней       |
+| Параметр    | Значение |
+|-------------|----------|
+| Access TTL  | 15 минут |
+| Refresh TTL | 7 дней   |
 
 Все защищённые эндпоинты требуют заголовок:
+
 ```
 Authorization: Bearer <access_token>
 ```
@@ -74,11 +74,11 @@ Authorization: Bearer <access_token>
 
 ### Auth — `/api/auth`
 
-| Метод | URL | Описание | Авторизация |
-|-------|-----|----------|-------------|
-| `POST` | `/api/auth/register` | Регистрация нового пользователя | Нет |
-| `POST` | `/api/auth/login` | Вход, получение токенов | Нет |
-| `POST` | `/api/auth/refresh` | Обновление access токена | Нет |
+| Метод  | URL                  | Описание                        | Авторизация |
+|--------|----------------------|---------------------------------|-------------|
+| `POST` | `/api/auth/register` | Регистрация нового пользователя | Нет         |
+| `POST` | `/api/auth/login`    | Вход, получение токенов         | Нет         |
+| `POST` | `/api/auth/refresh`  | Обновление access токена        | Нет         |
 
 **Регистрация — тело запроса:**
 ```json
@@ -101,22 +101,22 @@ Authorization: Bearer <access_token>
 
 ### Users — `/api/user`
 
-| Метод | URL | Описание | Роль |
-|-------|-----|----------|------|
-| `GET` | `/api/user/me` | Получить свой профиль | USER |
-| `PUT` | `/api/user/me` | Обновить свой профиль | USER |
-| `GET` | `/api/user` | Список всех пользователей | ADMIN |
-| `DELETE` | `/api/user/{userId}` | Удалить пользователя | ADMIN |
+| Метод    | URL                  | Описание                  | Роль  |
+|----------|----------------------|---------------------------|-------|
+| `GET`    | `/api/user/me`       | Получить свой профиль     | USER  |
+| `PUT`    | `/api/user/me`       | Обновить свой профиль     | USER  |
+| `GET`    | `/api/user`          | Список всех пользователей | ADMIN |
+| `DELETE` | `/api/user/{userId}` | Удалить пользователя      | ADMIN |
 
 ---
 
 ### Accounts — `/api/accounts`
 
-| Метод | URL | Описание | Роль |
-|-------|-----|----------|------|
-| `POST` | `/api/accounts` | Создать счёт | USER |
-| `GET` | `/api/accounts` | Список своих счётов (pageable) | USER |
-| `GET` | `/api/accounts/{id}` | Получить счёт по ID | USER |
+| Метод  | URL                  | Описание                       | Роль |
+|--------|----------------------|--------------------------------|------|
+| `POST` | `/api/accounts`      | Создать счёт                   | USER |
+| `GET`  | `/api/accounts`      | Список своих счётов (pageable) | USER |
+| `GET`  | `/api/accounts/{id}` | Получить счёт по ID            | USER |
 
 **Создание счёта — тело запроса:**
 ```json
@@ -129,22 +129,32 @@ Authorization: Bearer <access_token>
 
 ---
 
-### Cards — `/api/card`
+### Cards — `/api/cards`
 
-| Метод | URL | Описание | Роль |
-|-------|-----|----------|------|
-| `GET` | `/api/card` | Список своих карт (pageable) | USER |
-| `POST` | `/api/card/{cardId}/block` | Заблокировать карту | USER |
-| `POST` | `/api/card/{cardId}/activate` | Активировать карту | USER |
+| Метод    | URL                            | Описание                     | Роль |
+|----------|--------------------------------|------------------------------|------|
+| `GET`    | `/api/cards`                   | Список своих карт (pageable) | USER |
+| `POST`   | `/api/cards`                   | Создать карту для счёта      | USER |
+| `DELETE` | `/api/cards/{cardId}`          | Удалить карту                | USER |
+| `POST`   | `/api/cards/{cardId}/block`    | Заблокировать карту          | USER |
+| `POST`   | `/api/cards/{cardId}/activate` | Активировать карту           | USER |
 
-Номер карты (PAN) хранится в **зашифрованном виде**, в ответе возвращается только последние 4 цифры.
+**Создание карты — тело запроса:**
+```json
+{
+  "accountId": 1
+}
+```
+
+- PAN карты хранится в **зашифрованном** виде
+- В ответе возвращаются только **последние 4 цифры**
 
 ---
 
 ### Transfers — `/api/transfers`
 
-| Метод | URL | Описание | Роль |
-|-------|-----|----------|------|
+| Метод  | URL              | Описание              | Роль |
+|--------|------------------|-----------------------|------|
 | `POST` | `/api/transfers` | Перевод между счетами | USER |
 
 **Тело запроса:**
@@ -202,12 +212,13 @@ User
 
 Все исключения перехватываются `GlobalExceptionHandler`. Основные кастомные исключения:
 
-| Исключение | Ситуация |
-|------------|----------|
-| `InsufficientFundsException` | Недостаточно средств |
-| `CurrencyMismatchException` | Разные валюты при переводе |
-| `AccountInactiveException` | Счёт неактивен |
-| `AccountNotFoundException` | Счёт не найден |
-| `InvalidTransferException` | Некорректный перевод |
-| `TransferConflictException` | Конфликт при параллельном переводе |
-| `TransferFailedException` | Общая ошибка перевода |
+| Исключение                   | Ситуация                             |
+|------------------------------|--------------------------------------|
+| `InsufficientFundsException` | Недостаточно средств                 |
+| `CurrencyMismatchException`  | Разные валюты при переводе           |
+| `AccountInactiveException`   | Счёт неактивен                       |
+| `AccountNotFoundException`   | Счёт не найден                       |
+| `CardNotFoundException`      | Карта не найдена                     |
+| `InvalidTransferException`   | Некорректный перевод                 |
+| `TransferConflictException`  | Конфликт при параллельном переводе   |
+| `TransferFailedException`    | Общая ошибка перевода                |
