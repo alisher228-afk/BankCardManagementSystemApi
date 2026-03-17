@@ -9,6 +9,8 @@ import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.TransactionS
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.TransactionRepository;
 import org.akusher.bankcardmanagementsystemapi.service.exception.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,4 +135,14 @@ public class TransferService {
         return transactionResponseMapping.mapToResponse(tx);
     }
 
+    public Page<TransactionResponse> getHistory(Long accountId, String username, Pageable pageable) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        if (!account.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Access denied"); // или кастомный AccessDeniedException
+        }
+        return transactionRepository
+                .findByFromAccountIdOrToAccountId(accountId, accountId, pageable)
+                .map(transactionResponseMapping::mapToResponse);
+    }
 }

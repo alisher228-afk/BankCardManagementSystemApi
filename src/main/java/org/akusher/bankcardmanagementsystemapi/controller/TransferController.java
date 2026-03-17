@@ -2,14 +2,16 @@ package org.akusher.bankcardmanagementsystemapi.controller;
 
 
 import jakarta.validation.Valid;
+import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.TransferRequest;
 import org.akusher.bankcardmanagementsystemapi.service.TransferService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/transfers")
@@ -28,5 +30,14 @@ public class TransferController {
                 transferRequest.amount()
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/history/{accountId}")
+    public ResponseEntity<Page<TransactionResponse>> getHistory(
+            @PathVariable Long accountId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(transferService.getHistory(accountId,userDetails.getUsername(), pageable));
     }
 }

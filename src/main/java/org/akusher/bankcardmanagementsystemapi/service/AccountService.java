@@ -39,7 +39,7 @@ public class AccountService {
         account.setBalance(BigDecimal.ZERO);
         account.setCurrency(currency);
         account.setAccountNumber(generateAccountNumber());
-        account.setIban(generateIban()); // ✅ добавили
+        account.setIban(generateIban());
 
         Account savedAccount = accountRepository.save(account);
 
@@ -53,7 +53,6 @@ public class AccountService {
                 .substring(0, 18);
     }
 
-    // ✅ Получить все счета пользователя
     public Page<AccountResponse> getUserAccounts(String username, Pageable pageable) {
 
         User user = getUserByUsername(username);
@@ -63,7 +62,6 @@ public class AccountService {
                 .map(accountResponseMapping::mapToResponse);
     }
 
-    // ✅ Получить конкретный счет
     public AccountResponse getAccount(Long accountId, String username) {
 
         User user = getUserByUsername(username);
@@ -78,7 +76,6 @@ public class AccountService {
         return accountResponseMapping.mapToResponse(account);
     }
 
-    // 🔒 Вспомогательный метод
     private User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

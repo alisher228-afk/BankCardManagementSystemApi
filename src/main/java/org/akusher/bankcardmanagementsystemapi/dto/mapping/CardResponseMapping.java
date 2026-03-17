@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public  class CardResponseMapping {
-    public CardResponse toResponse(Card card) {
+    public CardResponse mapToResponse(Card card) {
         return new CardResponse(
                 card.getId(),
                 card.getPanLast4(),

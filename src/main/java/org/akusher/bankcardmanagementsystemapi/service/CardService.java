@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.YearMonth;
 import java.util.Base64;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -37,7 +36,7 @@ public class CardService {
     public Page<CardResponse> getUserCards(User user, Pageable pageable) {
         return cardRepository
                 .findByAccountUser(user, pageable)
-                .map(cardResponseMapping::toResponse);
+                .map(cardResponseMapping::mapToResponse);
     }
 
     public void blockCard(Long cardId , Long userId) {
