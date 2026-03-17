@@ -1,10 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
 import jakarta.validation.Valid;
-import org.akusher.bankcardmanagementsystemapi.dto.AccountResponse;
-import org.akusher.bankcardmanagementsystemapi.dto.CreateAccountRequest;
-import org.akusher.bankcardmanagementsystemapi.dto.DepositRequest;
-import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.*;
 import org.akusher.bankcardmanagementsystemapi.service.AccountService;
 import org.akusher.bankcardmanagementsystemapi.service.TransferService;
 import org.springframework.data.domain.Page;
@@ -69,4 +66,19 @@ public class AccountController {
         TransactionResponse response = transferService.deposit(accountId, request.amount());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<TransactionResponse> withdraw(
+            @PathVariable Long accountId,
+            @Valid @RequestBody WithdrawRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        TransactionResponse response = transferService.withdraw(
+                accountId,
+                request.amount(),
+                userDetails.getUsername()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
 }

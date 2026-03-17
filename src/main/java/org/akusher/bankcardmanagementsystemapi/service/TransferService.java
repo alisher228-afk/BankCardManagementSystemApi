@@ -135,6 +135,48 @@ public class TransferService {
         return transactionResponseMapping.mapToResponse(tx);
     }
 
+    @Transactional
+    public TransactionResponse withdraw(Long accountId, BigDecimal amount, String username) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidTransferException("Amount must be greater than zero");
+        }
+
+        Account account = accountRepository.findByIdForUpdate(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+
+        if (!account.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new AccountInactiveException(accountId);
+        }
+
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Insufficient funds on account: " + accountId);
+        }
+
+        Transaction tx = new Transaction();
+        tx.setFromAccount(account);
+        tx.setToAccount(null);
+        tx.setAmount(amount);
+        tx.setCurrency(account.getCurrency());
+        tx.setStatus(TransactionStatus.PENDING);
+        tx.setReference(java.util.UUID.randomUUID().toString());
+        tx.setDescription("Withdraw");
+        transactionRepository.save(tx);
+
+        try {
+            account.setBalance(account.getBalance().subtract(amount));
+            tx.setStatus(TransactionStatus.COMPLETED);
+        } catch (RuntimeException ex) {
+            tx.setStatus(TransactionStatus.FAILED);
+            throw ex;
+        }
+
+        return transactionResponseMapping.mapToResponse(tx);
+    }
+
     public Page<TransactionResponse> getHistory(Long accountId, String username, Pageable pageable) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
