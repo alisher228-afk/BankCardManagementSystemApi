@@ -94,7 +94,6 @@ public class TransferService {
         tx.setToAccount(to);
         tx.setAmount(amount);
         tx.setCurrency(from.getCurrency());
-        tx.setStatus(TransactionStatus.COMPLETED);
         tx.setReference(java.util.UUID.randomUUID().toString());
         tx.setDescription("Transfer");
         return tx;
