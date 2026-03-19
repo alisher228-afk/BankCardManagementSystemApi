@@ -28,9 +28,9 @@ public class UserController {
 
     @PutMapping("/me")
     public UserResponse updateProfile(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody UpdateUserRequest request) {
-        return userService.updateProfile(user, request);
+        return userService.updateProfile(userDetails.getUsername(), request);
     }
 
     @GetMapping
@@ -42,6 +42,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse deleteUser(@PathVariable Long userId) {
-         return userService.deleteUser(userId);
+        return userService.deleteUser(userId);
     }
 }

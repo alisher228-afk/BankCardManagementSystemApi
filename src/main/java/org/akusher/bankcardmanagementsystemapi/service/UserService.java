@@ -30,13 +30,14 @@ public class UserService {
         return userResponseMapping.mapToResponse(user);
     }
 
-    public UserResponse updateProfile(User user, UpdateUserRequest request) {
+    public UserResponse updateProfile(String username, UpdateUserRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setUsername(request.username());
         user.setEmail(request.email());
 
-        var updatedUser = userRepository.save(user);
-        return userResponseMapping.mapToResponse(updatedUser);
+        return userResponseMapping.mapToResponse(userRepository.save(user));
     }
 
     public Page<UserResponse> getAllUsers(Pageable pageable) {

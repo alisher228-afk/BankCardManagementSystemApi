@@ -2,6 +2,7 @@ package org.akusher.bankcardmanagementsystemapi.service.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,6 +10,7 @@ import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -108,6 +110,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleCustomAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
         return buildResponse(ex.getMessage(), HttpStatus.FORBIDDEN, req.getRequestURI());
+    }
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ErrorResponse> handleTransactionSystemException(TransactionSystemException ex) {
+        Throwable cause = ex.getRootCause();
+        if (cause instanceof ConstraintViolationException) {
+            ConstraintViolationException cve = (ConstraintViolationException) cause;
+            String message = cve.getConstraintViolations().stream()
+                    .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
+                    .collect(Collectors.joining("; "));
+            return buildResponse(message, HttpStatus.BAD_REQUEST, "");
+        }
+        log.error("Transaction system exception", ex);
+        return buildResponse("Transaction failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
