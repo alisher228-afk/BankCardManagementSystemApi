@@ -145,7 +145,7 @@ public class TransferService {
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
 
         if (!account.getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
 
         if (account.getStatus() != AccountStatus.ACTIVE) {
@@ -181,7 +181,7 @@ public class TransferService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(accountId));
         if (!account.getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Access denied"); // или кастомный AccessDeniedException
+            throw new AccessDeniedException("Access denied");
         }
         return transactionRepository
                 .findByFromAccountIdOrToAccountId(accountId, accountId, pageable)

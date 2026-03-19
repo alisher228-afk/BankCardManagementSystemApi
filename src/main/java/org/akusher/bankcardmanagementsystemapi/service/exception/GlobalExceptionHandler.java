@@ -105,7 +105,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest req) {
         return buildResponse("Invalid username or password", HttpStatus.UNAUTHORIZED, req.getRequestURI());
     }
-
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleCustomAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
+        return buildResponse(ex.getMessage(), HttpStatus.FORBIDDEN, req.getRequestURI());
+    }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ErrorResponse {
