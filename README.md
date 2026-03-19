@@ -1,45 +1,65 @@
 # 🏦 Bank Card Management System API
 
-> 🚧 **В разработке** — проект активно развивается. Планируется добавление новых функций и улучшений. Следите за обновлениями!
+> 🚧 **В разработке** — проект активно развивается. Планируется добавление новых функций и улучшений.
 
-REST API для управления банковскими счетами и картами с JWT-аутентификацией и разграничением ролей.
+REST API для управления банковскими счетами и картами с JWT-аутентификацией, разграничением ролей и полной историей транзакций.
 
 ---
 
 ## Технологический стек
 
-- **Java 17+** + **Spring Boot**
+- **Java 17** + **Spring Boot 3.5**
 - **Spring Security** — аутентификация и авторизация
 - **JWT (JJWT)** — access и refresh токены
 - **Spring Data JPA** + **Hibernate**
 - **PostgreSQL** — основная база данных
 - **Liquibase** — версионирование схемы БД
 - **Bean Validation** — валидация входящих данных
+- **JUnit 5** + **Mockito** — юнит-тесты
+- **Swagger / OpenAPI** — документация API
+- **Docker** + **Docker Compose** — контейнеризация
 
 ---
 
-## Запуск проекта
+## Быстрый старт (Docker)
+
+Самый простой способ запустить проект — через Docker Compose. Не нужно устанавливать Java, Maven или PostgreSQL локально.
+
+### Требования
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### Запуск
+
+```bash
+git clone https://github.com/akusher/BankCardManagementSystemApi.git
+cd BankCardManagementSystemApi
+docker-compose up --build
+```
+
+При первом запуске Docker соберёт образ приложения и поднимет PostgreSQL. Liquibase автоматически применит все миграции.
+
+Приложение будет доступно на **http://localhost:8087**
+
+Swagger UI: **http://localhost:8087/swagger-ui/index.html**
+
+---
+
+## Локальный запуск (без Docker)
 
 ### Требования
 
 - Java 17+
-- PostgreSQL (порт `5438`)
+- PostgreSQL
 - Maven
 
 ### Настройка базы данных
 
-```sql
-CREATE DATABASE postgres;
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5438/postgres
+spring.datasource.username=postgres
+spring.datasource.password=54321
 ```
-
-По умолчанию приложение ожидает:
-
-| Параметр | Значение         |
-|----------|------------------|
-| URL      | `localhost:5438` |
-| БД       | `postgres`       |
-| Username | `postgres`       |
-| Password | `54321`          |
 
 Все параметры можно изменить в `src/main/resources/application.properties`.
 
@@ -49,7 +69,15 @@ CREATE DATABASE postgres;
 mvn spring-boot:run
 ```
 
-Приложение запустится на порту **8087**. Liquibase автоматически применит миграции при старте.
+---
+
+## Тесты
+
+```bash
+mvn test
+```
+
+Покрыты юнит-тестами все методы `TransferService`: `transfer`, `deposit`, `withdraw` — включая позитивные и негативные сценарии.
 
 ---
 
@@ -67,6 +95,8 @@ mvn spring-boot:run
 ```
 Authorization: Bearer <access_token>
 ```
+
+В Swagger UI доступна кнопка **Authorize** для ввода токена и тестирования защищённых endpoints.
 
 ---
 
@@ -112,11 +142,13 @@ Authorization: Bearer <access_token>
 
 ### Accounts — `/api/accounts`
 
-| Метод  | URL                  | Описание                       | Роль |
-|--------|----------------------|--------------------------------|------|
-| `POST` | `/api/accounts`      | Создать счёт                   | USER |
-| `GET`  | `/api/accounts`      | Список своих счётов (pageable) | USER |
-| `GET`  | `/api/accounts/{id}` | Получить счёт по ID            | USER |
+| Метод  | URL                              | Описание                       | Роль |
+|--------|----------------------------------|--------------------------------|------|
+| `POST` | `/api/accounts`                  | Создать счёт                   | USER |
+| `GET`  | `/api/accounts`                  | Список своих счётов (pageable) | USER |
+| `GET`  | `/api/accounts/{id}`             | Получить счёт по ID            | USER |
+| `POST` | `/api/accounts/{id}/deposit`     | Пополнить счёт                 | USER |
+| `POST` | `/api/accounts/{id}/withdraw`    | Снять средства со счёта        | USER |
 
 **Создание счёта — тело запроса:**
 ```json
@@ -126,6 +158,57 @@ Authorization: Bearer <access_token>
 ```
 
 Каждый счёт автоматически получает уникальный **IBAN** и **номер счёта**.
+
+**Deposit / Withdraw — тело запроса:**
+```json
+{
+  "amount": 500.00
+}
+```
+
+**Ответ (TransactionResponse):**
+```json
+{
+  "id": 1,
+  "fromAccountId": null,
+  "toAccountId": 3,
+  "amount": 500.00,
+  "currency": "USD",
+  "status": "COMPLETED",
+  "reference": "uuid-reference",
+  "description": "Deposit",
+  "createdAt": "2026-03-20T10:00:00"
+}
+```
+
+---
+
+### Transfers — `/api/transfers`
+
+| Метод  | URL                                | Описание                       | Роль |
+|--------|------------------------------------|--------------------------------|------|
+| `POST` | `/api/transfers`                   | Перевод между счетами          | USER |
+| `GET`  | `/api/transfers/history/{accountId}` | История транзакций по счёту  | USER |
+
+**Перевод — тело запроса:**
+```json
+{
+  "fromId": 1,
+  "toId": 2,
+  "amount": 500.00
+}
+```
+
+**История транзакций** поддерживает пагинацию и сортировку:
+```
+GET /api/transfers/history/1?page=0&size=10&sort=createdAt,desc
+```
+
+Сервис проверяет:
+- достаточность средств на счёте отправителя
+- совпадение валют счётов
+- активность обоих счётов
+- права доступа — пользователь видит только свои счета
 
 ---
 
@@ -139,37 +222,17 @@ Authorization: Bearer <access_token>
 | `POST`   | `/api/cards/{cardId}/block`    | Заблокировать карту          | USER |
 | `POST`   | `/api/cards/{cardId}/activate` | Активировать карту           | USER |
 
-**Создание карты — тело запроса:**
-```json
-{
-  "accountId": 1
-}
-```
-
 - PAN карты хранится в **зашифрованном** виде
 - В ответе возвращаются только **последние 4 цифры**
 
 ---
 
-### Transfers — `/api/transfers`
+## Безопасность
 
-| Метод  | URL              | Описание              | Роль |
-|--------|------------------|-----------------------|------|
-| `POST` | `/api/transfers` | Перевод между счетами | USER |
-
-**Тело запроса:**
-```json
-{
-  "fromId": 1,
-  "toId": 2,
-  "amount": 500.00
-}
-```
-
-Сервис проверяет:
-- достаточность средств на счёте отправителя
-- совпадение валют счётов
-- активность обоих счётов
+- Все операции со счётами проверяют **ownership** — пользователь не может получить доступ к чужим счетам
+- Переводы защищены от **deadlock** через упорядоченную блокировку (`Math.min/max` по ID)
+- Используется **оптимистичная блокировка** (`@Version`) для защиты от race condition
+- Транзакции сохраняются со статусом `PENDING` → `COMPLETED` / `FAILED`
 
 ---
 
@@ -186,7 +249,7 @@ src/main/java/.../
 │   └── mapping/        # Маппинг entity → DTO
 ├── repository/         # Spring Data репозитории
 └── config/
-    └── jpa/            # SecurityConfig, JwtFilter, конвертеры
+    └── jpa/            # SecurityConfig, JwtFilter, SwaggerConfig
 ```
 
 ---
@@ -203,7 +266,7 @@ User
 - **User** — пользователь системы, роль `USER` или `ADMIN`
 - **Account** — банковский счёт с IBAN, балансом и валютой
 - **Card** — привязана к счёту, PAN хранится зашифрованным
-- **Transaction** — история переводов между счетами
+- **Transaction** — история операций: deposit, withdraw, transfer
 - **RefreshToken** — привязан к пользователю, хранится в БД
 
 ---
@@ -212,13 +275,12 @@ User
 
 Все исключения перехватываются `GlobalExceptionHandler`. Основные кастомные исключения:
 
-| Исключение                   | Ситуация                             |
-|------------------------------|--------------------------------------|
-| `InsufficientFundsException` | Недостаточно средств                 |
-| `CurrencyMismatchException`  | Разные валюты при переводе           |
-| `AccountInactiveException`   | Счёт неактивен                       |
-| `AccountNotFoundException`   | Счёт не найден                       |
-| `CardNotFoundException`      | Карта не найдена                     |
-| `InvalidTransferException`   | Некорректный перевод                 |
-| `TransferConflictException`  | Конфликт при параллельном переводе   |
-| `TransferFailedException`    | Общая ошибка перевода                |
+| Исключение                   | HTTP | Ситуация                           |
+|------------------------------|------|------------------------------------|
+| `InsufficientFundsException` | 400  | Недостаточно средств               |
+| `CurrencyMismatchException`  | 400  | Разные валюты при переводе         |
+| `AccountInactiveException`   | 400  | Счёт неактивен                     |
+| `AccountNotFoundException`   | 404  | Счёт не найден                     |
+| `InvalidTransferException`   | 400  | Некорректный перевод               |
+| `AccessDeniedException`      | 403  | Нет прав доступа к ресурсу         |
+| `TransferConflictException`  | 409  | Конфликт при параллельном переводе |
