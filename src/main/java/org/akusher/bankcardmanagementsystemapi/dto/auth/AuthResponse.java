@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.dto;
+package org.akusher.bankcardmanagementsystemapi.dto.auth;
 
 public record AuthResponse(
         String accessToken,

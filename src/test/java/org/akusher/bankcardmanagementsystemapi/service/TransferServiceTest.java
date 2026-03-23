@@ -1,14 +1,14 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
-import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.transfer.TransactionResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.mapping.TransactionResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
 import org.akusher.bankcardmanagementsystemapi.entity.Transaction;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
+import org.akusher.bankcardmanagementsystemapi.exception.*;
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.TransactionRepository;
-import org.akusher.bankcardmanagementsystemapi.service.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

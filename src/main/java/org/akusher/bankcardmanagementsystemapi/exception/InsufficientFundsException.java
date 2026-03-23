@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.service.exception;
+package org.akusher.bankcardmanagementsystemapi.exception;
 
 public class InsufficientFundsException extends RuntimeException {
     public InsufficientFundsException(String message) {

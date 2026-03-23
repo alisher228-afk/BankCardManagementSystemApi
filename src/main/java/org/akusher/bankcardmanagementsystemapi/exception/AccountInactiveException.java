@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.service.exception;
+package org.akusher.bankcardmanagementsystemapi.exception;
 
 public class AccountInactiveException extends RuntimeException {
     public AccountInactiveException(Long id) {

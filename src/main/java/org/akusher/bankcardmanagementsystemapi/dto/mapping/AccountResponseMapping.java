@@ -1,6 +1,6 @@
 package org.akusher.bankcardmanagementsystemapi.dto.mapping;
 
-import org.akusher.bankcardmanagementsystemapi.dto.AccountResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.account.AccountResponse;
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
 import org.springframework.stereotype.Component;
 

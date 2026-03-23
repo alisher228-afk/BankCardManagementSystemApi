@@ -1,9 +1,9 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
 import jakarta.validation.Valid;
-import org.akusher.bankcardmanagementsystemapi.dto.AuthResponse;
-import org.akusher.bankcardmanagementsystemapi.dto.LoginRequest;
-import org.akusher.bankcardmanagementsystemapi.dto.RegisterRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.auth.AuthResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.auth.LoginRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.auth.RegisterRequest;
 import org.akusher.bankcardmanagementsystemapi.entity.RefreshToken;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.Role;

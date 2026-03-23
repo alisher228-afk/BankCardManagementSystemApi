@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.dto;
+package org.akusher.bankcardmanagementsystemapi.dto.account;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

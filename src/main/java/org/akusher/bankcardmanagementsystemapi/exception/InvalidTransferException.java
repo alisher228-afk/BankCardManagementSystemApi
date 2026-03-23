@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.service.exception;
+package org.akusher.bankcardmanagementsystemapi.exception;
 
 public class InvalidTransferException extends RuntimeException {
     public InvalidTransferException(String message) {

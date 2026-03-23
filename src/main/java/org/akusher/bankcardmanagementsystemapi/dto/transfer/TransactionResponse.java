@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.dto;
+package org.akusher.bankcardmanagementsystemapi.dto.transfer;
 
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.TransactionStatus;
 import java.math.BigDecimal;

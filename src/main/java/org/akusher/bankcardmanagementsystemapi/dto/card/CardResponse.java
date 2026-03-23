@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.dto;
+package org.akusher.bankcardmanagementsystemapi.dto.card;
 
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
 

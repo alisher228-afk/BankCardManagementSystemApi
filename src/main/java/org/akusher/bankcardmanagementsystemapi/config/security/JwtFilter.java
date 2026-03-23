@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.config.jpa;
+package org.akusher.bankcardmanagementsystemapi.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

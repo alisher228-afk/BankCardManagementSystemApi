@@ -1,8 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
-import org.akusher.bankcardmanagementsystemapi.dto.UpdateUserRequest;
-import org.akusher.bankcardmanagementsystemapi.dto.UserResponse;
-import org.akusher.bankcardmanagementsystemapi.entity.User;
+import org.akusher.bankcardmanagementsystemapi.dto.user.UpdateUserRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.user.UserResponse;
 import org.akusher.bankcardmanagementsystemapi.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

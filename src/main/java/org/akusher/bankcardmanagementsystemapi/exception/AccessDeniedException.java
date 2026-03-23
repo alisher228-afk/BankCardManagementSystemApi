@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.service.exception;
+package org.akusher.bankcardmanagementsystemapi.exception;
 
 public class AccessDeniedException extends RuntimeException {
     public AccessDeniedException(String message) {

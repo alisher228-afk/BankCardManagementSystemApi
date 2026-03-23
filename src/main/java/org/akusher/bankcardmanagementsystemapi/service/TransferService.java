@@ -1,14 +1,14 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
-import org.akusher.bankcardmanagementsystemapi.dto.TransactionResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.transfer.TransactionResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.mapping.TransactionResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
 import org.akusher.bankcardmanagementsystemapi.entity.Transaction;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.AccountStatus;
 import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.TransactionStatus;
+import org.akusher.bankcardmanagementsystemapi.exception.*;
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.TransactionRepository;
-import org.akusher.bankcardmanagementsystemapi.service.exception.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,9 @@ public class TransferService {
 
         Account first = accountRepository.findByIdForUpdate(firstLockId)
                 .orElseThrow(() -> new AccountNotFoundException(firstLockId));
+        if(!first.getId().equals(secondLockId)) {
+
+        }
 
         Account second = accountRepository.findByIdForUpdate(secondLockId)
                 .orElseThrow(() -> new AccountNotFoundException(secondLockId));

@@ -1,7 +1,11 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
 import jakarta.validation.Valid;
-import org.akusher.bankcardmanagementsystemapi.dto.*;
+import org.akusher.bankcardmanagementsystemapi.dto.account.AccountResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.account.CreateAccountRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.account.DepositRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.account.WithdrawRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.transfer.TransactionResponse;
 import org.akusher.bankcardmanagementsystemapi.service.AccountService;
 import org.akusher.bankcardmanagementsystemapi.service.TransferService;
 import org.springframework.data.domain.Page;

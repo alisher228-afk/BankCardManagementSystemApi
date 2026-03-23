@@ -1,4 +1,4 @@
-package org.akusher.bankcardmanagementsystemapi.service.exception;
+package org.akusher.bankcardmanagementsystemapi.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;

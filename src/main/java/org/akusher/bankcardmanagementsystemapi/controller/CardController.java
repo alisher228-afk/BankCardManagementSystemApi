@@ -1,7 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.controller;
 
-import org.akusher.bankcardmanagementsystemapi.dto.CardResponse;
-import org.akusher.bankcardmanagementsystemapi.dto.CreateCardRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.card.CardResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.card.CreateCardRequest;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.service.CardService;
 import org.springframework.data.domain.Page;

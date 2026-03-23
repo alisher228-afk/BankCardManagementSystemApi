@@ -1,6 +1,6 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
-import org.akusher.bankcardmanagementsystemapi.dto.CardResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.card.CardResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.mapping.CardResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.Account;
 import org.akusher.bankcardmanagementsystemapi.entity.Card;
@@ -9,6 +9,8 @@ import org.akusher.bankcardmanagementsystemapi.entity.statusAndRole.CardStatus;
 import org.akusher.bankcardmanagementsystemapi.repository.AccountRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.CardRepository;
 import org.akusher.bankcardmanagementsystemapi.repository.UserRepository;
+import org.akusher.bankcardmanagementsystemapi.exception.AccessDeniedException;
+import org.akusher.bankcardmanagementsystemapi.exception.AccountNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,9 +43,9 @@ public class CardService {
 
     public void blockCard(Long cardId , Long userId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new RuntimeException("Card not found"));
+                .orElseThrow(() -> new AccountNotFoundException(cardId));
         if (!card.getAccount().getUser().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new AccessDeniedException("Unauthorized");
         }
 
         card.setStatus(CardStatus.BLOCKED);

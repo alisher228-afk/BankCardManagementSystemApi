@@ -1,7 +1,7 @@
 package org.akusher.bankcardmanagementsystemapi.service;
 
-import org.akusher.bankcardmanagementsystemapi.dto.UpdateUserRequest;
-import org.akusher.bankcardmanagementsystemapi.dto.UserResponse;
+import org.akusher.bankcardmanagementsystemapi.dto.user.UpdateUserRequest;
+import org.akusher.bankcardmanagementsystemapi.dto.user.UserResponse;
 import org.akusher.bankcardmanagementsystemapi.dto.mapping.UserResponseMapping;
 import org.akusher.bankcardmanagementsystemapi.entity.User;
 import org.akusher.bankcardmanagementsystemapi.repository.UserRepository;
