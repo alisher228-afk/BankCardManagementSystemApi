@@ -32,7 +32,7 @@ REST API для управления банковскими счетами и к
 ### Запуск
 
 ```bash
-git clone https://github.com/akusher/BankCardManagementSystemApi.git
+git clone https://github.com/alisher228-afk/BankCardManagementSystemApi.git
 cd BankCardManagementSystemApi
 docker-compose up --build
 ```
