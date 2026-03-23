@@ -38,9 +38,6 @@ public class TransferService {
 
         Account first = accountRepository.findByIdForUpdate(firstLockId)
                 .orElseThrow(() -> new AccountNotFoundException(firstLockId));
-        if(!first.getId().equals(secondLockId)) {
-
-        }
 
         Account second = accountRepository.findByIdForUpdate(secondLockId)
                 .orElseThrow(() -> new AccountNotFoundException(secondLockId));
