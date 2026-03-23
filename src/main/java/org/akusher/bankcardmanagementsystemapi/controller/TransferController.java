@@ -23,11 +23,13 @@ public class TransferController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> transfer(@Valid @RequestBody TransferRequest transferRequest) {
+    public ResponseEntity<Void> transfer(@Valid @RequestBody TransferRequest transferRequest,
+                                         @AuthenticationPrincipal UserDetails userDetails) {
         transferService.transfer(
                 transferRequest.fromId(),
                 transferRequest.toId(),
-                transferRequest.amount()
+                transferRequest.amount(),
+                userDetails.getUsername()
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

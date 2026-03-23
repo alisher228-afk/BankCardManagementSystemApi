@@ -29,7 +29,7 @@ public class TransferService {
         this.transactionResponseMapping = transactionResponseMapping;
     }
     @Transactional
-    public void transfer(Long fromId, Long toId, BigDecimal amount) {
+    public void transfer(Long fromId, Long toId, BigDecimal amount , String username) {
 
         validateBasicInput(fromId, toId, amount);
 
@@ -47,6 +47,10 @@ public class TransferService {
 
         Account from = fromId.equals(first.getId()) ? first : second;
         Account to = toId.equals(first.getId()) ? first : second;
+
+        if (!from.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("Access denied");
+        }
 
         Transaction tx = buildTransaction(from, to, amount);
         tx.setStatus(TransactionStatus.PENDING);

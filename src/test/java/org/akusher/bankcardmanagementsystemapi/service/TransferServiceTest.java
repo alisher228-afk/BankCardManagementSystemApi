@@ -71,7 +71,7 @@ class TransferServiceTest {
         when(accountRepository.findByIdForUpdate(2L)).thenReturn(Optional.of(toAccount));
         when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        transferService.transfer(1L, 2L, new BigDecimal("200.00"));
+        transferService.transfer(1L, 2L, new BigDecimal("200.00"), "akusher");
 
         assertEquals(new BigDecimal("800.00"), fromAccount.getBalance());
         assertEquals(new BigDecimal("700.00"), toAccount.getBalance());
@@ -85,14 +85,14 @@ class TransferServiceTest {
         when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         assertThrows(InsufficientFundsException.class, () ->
-                transferService.transfer(1L, 2L, new BigDecimal("9999.00"))
+                transferService.transfer(1L, 2L, new BigDecimal("9999.00") , "akusher")
         );
     }
 
     @Test
     void transfer_sameAccount_throwsException() {
         assertThrows(InvalidTransferException.class, () ->
-                transferService.transfer(1L, 1L, new BigDecimal("100.00"))
+                transferService.transfer(1L, 1L, new BigDecimal("100.00") , "akusher")
         );
     }
 
@@ -105,7 +105,7 @@ class TransferServiceTest {
         when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         assertThrows(CurrencyMismatchException.class, () ->
-                transferService.transfer(1L, 2L, new BigDecimal("100.00"))
+                transferService.transfer(1L, 2L, new BigDecimal("100.00")  , "akusher")
         );
     }
 
@@ -114,7 +114,7 @@ class TransferServiceTest {
         when(accountRepository.findByIdForUpdate(any())).thenReturn(Optional.empty());
 
         assertThrows(AccountNotFoundException.class, () ->
-                transferService.transfer(1L, 2L, new BigDecimal("100.00"))
+                transferService.transfer(1L, 2L, new BigDecimal("100.00") , "akusher")
         );
     }
 
@@ -127,7 +127,22 @@ class TransferServiceTest {
         when(transactionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         assertThrows(AccountInactiveException.class, () ->
-                transferService.transfer(1L, 2L, new BigDecimal("100.00"))
+                transferService.transfer(1L, 2L, new BigDecimal("100.00") , "akusher")
+        );
+    }
+
+    @Test
+    void transfer_accessDenied_throwsException() {
+        User anotherUser = new User();
+        anotherUser.setId(2L);
+        anotherUser.setUsername("anotherUser");
+        fromAccount.setUser(anotherUser);
+
+        when(accountRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(fromAccount));
+        when(accountRepository.findByIdForUpdate(2L)).thenReturn(Optional.of(toAccount));
+
+        assertThrows(AccessDeniedException.class, () ->
+                transferService.transfer(1L, 2L, new BigDecimal("100.00"), "akusher")
         );
     }
 
