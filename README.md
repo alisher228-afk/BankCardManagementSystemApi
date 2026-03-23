@@ -77,7 +77,7 @@ mvn spring-boot:run
 mvn test
 ```
 
-Покрыты юнит-тестами все методы `TransferService`: `transfer`, `deposit`, `withdraw` — включая позитивные и негативные сценарии.
+Покрыты юнит-тестами все методы `TransferService`: `transfer`, `deposit`, `withdraw` — включая позитивные и негативные сценарии (недостаточно средств, несовпадение валют, неактивный счёт, доступ к чужому счёту и др.).
 
 ---
 
@@ -142,13 +142,13 @@ Authorization: Bearer <access_token>
 
 ### Accounts — `/api/accounts`
 
-| Метод  | URL                              | Описание                       | Роль |
-|--------|----------------------------------|--------------------------------|------|
-| `POST` | `/api/accounts`                  | Создать счёт                   | USER |
-| `GET`  | `/api/accounts`                  | Список своих счётов (pageable) | USER |
-| `GET`  | `/api/accounts/{id}`             | Получить счёт по ID            | USER |
-| `POST` | `/api/accounts/{id}/deposit`     | Пополнить счёт                 | USER |
-| `POST` | `/api/accounts/{id}/withdraw`    | Снять средства со счёта        | USER |
+| Метод  | URL                           | Описание                       | Роль |
+|--------|-------------------------------|--------------------------------|------|
+| `POST` | `/api/accounts`               | Создать счёт                   | USER |
+| `GET`  | `/api/accounts`               | Список своих счётов (pageable) | USER |
+| `GET`  | `/api/accounts/{id}`          | Получить счёт по ID            | USER |
+| `POST` | `/api/accounts/{id}/deposit`  | Пополнить счёт                 | USER |
+| `POST` | `/api/accounts/{id}/withdraw` | Снять средства со счёта        | USER |
 
 **Создание счёта — тело запроса:**
 ```json
@@ -185,10 +185,10 @@ Authorization: Bearer <access_token>
 
 ### Transfers — `/api/transfers`
 
-| Метод  | URL                                | Описание                       | Роль |
-|--------|------------------------------------|--------------------------------|------|
-| `POST` | `/api/transfers`                   | Перевод между счетами          | USER |
-| `GET`  | `/api/transfers/history/{accountId}` | История транзакций по счёту  | USER |
+| Метод  | URL                                  | Описание                    | Роль |
+|--------|--------------------------------------|-----------------------------|------|
+| `POST` | `/api/transfers`                     | Перевод между счетами       | USER |
+| `GET`  | `/api/transfers/history/{accountId}` | История транзакций по счёту | USER |
 
 **Перевод — тело запроса:**
 ```json
@@ -199,16 +199,25 @@ Authorization: Bearer <access_token>
 }
 ```
 
-**История транзакций** поддерживает пагинацию и сортировку:
+**История транзакций** поддерживает пагинацию и сортировку через стандартные query-параметры Spring Pageable:
+
 ```
 GET /api/transfers/history/1?page=0&size=10&sort=createdAt,desc
 ```
+
+| Параметр | Тип     | По умолчанию   | Описание                                      |
+|----------|---------|----------------|-----------------------------------------------|
+| `page`   | integer | 0              | Номер страницы (с нуля)                       |
+| `size`   | integer | 20             | Количество записей на странице                |
+| `sort`   | string  | без сортировки | Поле и направление, например `createdAt,desc` |
+
+Доступные поля для сортировки: `createdAt`, `amount`, `status`.
 
 Сервис проверяет:
 - достаточность средств на счёте отправителя
 - совпадение валют счётов
 - активность обоих счётов
-- права доступа — пользователь видит только свои счета
+- права доступа — пользователь видит только свои транзакции
 
 ---
 
@@ -242,14 +251,20 @@ GET /api/transfers/history/1?page=0&size=10&sort=createdAt,desc
 src/main/java/.../
 ├── controller/         # REST-контроллеры
 ├── service/            # Бизнес-логика
-│   └── exception/      # Кастомные исключения + GlobalExceptionHandler
+├── exception/          # Кастомные исключения + GlobalExceptionHandler
 ├── entity/             # JPA-сущности
 │   └── statusAndRole/  # Enum-ы: Role, AccountStatus, CardStatus, TransactionStatus
 ├── dto/                # Request/Response DTO
+│   ├── account/
+│   ├── auth/
+│   ├── card/
+│   ├── transfer/
+│   ├── user/
 │   └── mapping/        # Маппинг entity → DTO
 ├── repository/         # Spring Data репозитории
 └── config/
-    └── jpa/            # SecurityConfig, JwtFilter, SwaggerConfig
+    ├── security/       # SecurityConfig, JwtFilter
+    └── swagger/        # SwaggerConfig
 ```
 
 ---
@@ -277,10 +292,10 @@ User
 
 | Исключение                   | HTTP | Ситуация                           |
 |------------------------------|------|------------------------------------|
-| `InsufficientFundsException` | 400  | Недостаточно средств               |
-| `CurrencyMismatchException`  | 400  | Разные валюты при переводе         |
-| `AccountInactiveException`   | 400  | Счёт неактивен                     |
 | `AccountNotFoundException`   | 404  | Счёт не найден                     |
 | `InvalidTransferException`   | 400  | Некорректный перевод               |
+| `CurrencyMismatchException`  | 400  | Разные валюты при переводе         |
+| `InsufficientFundsException` | 422  | Недостаточно средств               |
+| `AccountInactiveException`   | 409  | Счёт неактивен                     |
 | `AccessDeniedException`      | 403  | Нет прав доступа к ресурсу         |
 | `TransferConflictException`  | 409  | Конфликт при параллельном переводе |
